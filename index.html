@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sonsuza Dek Biz | 17 Ocak</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Great+Vibes&family=Poppins:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --soft-pink: #fce4ec;
+            --deep-navy: #1a237e;
+            --heart-red: #d32f2f;
+            --pure-white: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--soft-pink);
+            color: var(--deep-navy);
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        /* NAVBAR */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--soft-pink);
+        }
+
+        nav a {
+            margin: 0 12px;
+            text-decoration: none;
+            color: var(--deep-navy);
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--heart-red);
+        }
+
+        /* GİRİŞ EKRANLARI */
+        #login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--deep-navy);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 5000;
+            color: white;
+        }
+
+        #envelope-wrapper {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--soft-pink);
+            z-index: 4000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .envelope {
+            width: 300px;
+            height: 200px;
+            background: #eee;
+            position: relative;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: 1s;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .envelope::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top: 100px solid #ccc;
+            transform-origin: top;
+            transition: 0.5s;
+            z-index: 2;
+        }
+
+        .envelope.open::before {
+            transform: rotateX(180deg);
+        }
+
+        /* ANA İÇERİK */
+        #main-content {
+            display: none;
+        }
+
+        header {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: white;
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 4rem;
+            color: var(--heart-red);
+            margin: 0;
+        }
+
+        h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.5rem;
+            color: var(--deep-navy);
+            margin-bottom: 40px;
+        }
+
+        section {
+            padding: 100px 20px;
+            max-width: 1000px;
+            margin: auto;
+            text-align: center;
+        }
+
+        /* SAYAÇ */
+        .time-box {
+            background: var(--deep-navy);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            min-width: 60px;
+            display: inline-block;
+            margin: 5px;
+        }
+
+        .time-box span {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        /* SES DALGALI MESAJ (YENİ) */
+        .audio-card {
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+            margin-top: 20px;
+        }
+
+        #visualizer {
+            width: 100%;
+            height: 120px;
+            background: #fcfcfc;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: 1px solid #eee;
+        }
+
+        .play-voice-btn {
+            padding: 18px 40px;
+            background: var(--heart-red);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Poppins';
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: 0.3s;
+        }
+
+        .play-voice-btn:hover {
+            transform: scale(1.05);
+            background: var(--deep-navy);
+        }
+
+        /* ALFABE BÖLÜMÜ */
+        .alphabet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            text-align: left;
+        }
+
+        .letter-item {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 5px solid var(--heart-red);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .letter-item b {
+            font-size: 1.8rem;
+            color: var(--heart-red);
+            font-family: 'Great Vibes', cursive;
+            margin-right: 10px;
+        }
+
+        /* KÜÇÜK ŞEYLER / POLAROID */
+        .polaroid-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .polaroid {
+            background: white;
+            padding: 15px 15px 40px 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transform: rotate(-2deg);
+            transition: 0.3s;
+            width: 200px;
+        }
+
+        .polaroid:hover {
+            transform: rotate(0deg) scale(1.05);
+            z-index: 10;
+        }
+
+        .polaroid img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .polaroid span {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.2rem;
+            display: block;
+            margin-top: 15px;
+            color: var(--deep-navy);
+        }
+
+        /* MEKTUP YAĞMURU (YENİ) */
+        #letter-rain-container {
+            position: relative;
+            height: 450px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 30px;
+            overflow: hidden;
+            margin-top: 30px;
+            border: 2px dashed var(--heart-red);
+        }
+
+        .falling-letter {
+            position: absolute;
+            cursor: pointer;
+            font-size: 35px;
+            user-select: none;
+            animation: fall linear infinite;
+            filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.1));
+        }
+
+        @keyframes fall {
+            from {
+                top: -60px;
+            }
+
+            to {
+                top: 500px;
+            }
+        }
+
+        /* GELECEK KUMBARASI */
+        .bucket-list {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.2rem;
+            text-align: left;
+            display: inline-block;
+        }
+
+        .bucket-item::before {
+            content: '❤';
+            color: var(--heart-red);
+            margin-right: 15px;
+            font-size: 1.2rem;
+        }
+
+        /* KAZI KAZAN */
+        .scratch-container {
+            position: relative;
+            width: 300px;
+            height: 150px;
+            margin: 0 auto;
+        }
+
+        .scratch-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Dancing Script';
+            font-size: 1.4rem;
+            border: 2px dashed var(--heart-red);
+            padding: 10px;
+        }
+
+        #scratch-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 2;
+            border-radius: 10px;
+            cursor: crosshair;
+        }
+
+        .heart-particle {
+            position: fixed;
+            color: var(--heart-red);
+            font-size: 20px;
+            pointer-events: none;
+            z-index: 999;
+            animation: floatUp 6s linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-10vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        footer {
+            padding: 60px;
+            background: var(--deep-navy);
+            color: white;
+            margin-top: 50px;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            h2 {
+                font-size: 2rem;
+            }
+
+            .alphabet-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .polaroid {
+                width: 140px;
+            }
+
+            .bucket-list {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* LEZZET DURAKLARI STİLLERİ */
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            padding: 20px;
+        }
+
+        .food-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            transition: 0.3s;
+            border: 1px solid #fce4ec;
+        }
+
+        .food-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .food-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .food-info {
+            padding: 15px;
+        }
+
+        .food-info h3 {
+            margin: 0;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5rem;
+            color: var(--heart-red);
+        }
+
+        .food-info p {
+            font-size: 0.9rem;
+            color: #666;
+            margin: 5px 0 0;
+        }
+
+        .sen {
+            font-style: italic;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <audio id="bg-music" loop>
+        <source src="sounds/muzik.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="login-overlay">
+        <div style="text-align:center;">
+            <h2 style="color:white; font-family: 'Dancing Script'; font-size: 2.5rem;">Sadece Bizim İçin ❤️</h2>
+            <input type="password" id="passwordInput" maxlength="4" placeholder="GGAA"
+                style="padding:12px; border-radius:10px; border:none; text-align:center; font-size:1.5rem; outline: none; box-shadow: 0 0 20px rgba(255,255,255,0.2);">
+            <button onclick="checkPassword()"
+                style="display:block; width:100%; margin-top:15px; padding:12px; background:var(--heart-red); color:white; border:none; border-radius:10px; cursor:pointer; font-weight: 600;">GİRİŞ
+                YAP</button>
+        </div>
+    </div>
+
+    <div id="envelope-wrapper">
+        <div class="envelope" id="main-envelope" onclick="openLetter()">
+            <div
+                style="position:absolute; top:40%; width:100%; text-align:center; font-family:'Dancing Script'; font-size:1.5rem; z-index:1; color: #555;">
+                Sana bir mektubum var...</div>
+        </div>
+    </div>
+
+    <nav id="navbar">
+        <a href="#main-content">Giriş</a>
+        <a href="#alfabe">A'dan Z'ye</a>
+        <a href="#kucuk-seyler">Anılar</a>
+        <a href="#mektup-yagmuru">Notlar</a>
+        <a href="#kazikazan">Özel Mesaj</a>
+        <a href="#lezzetler">Lezzetler</a>
+    </nav>
+
+    <div id="main-content">
+        <header>
+            <h1 id="typewriter-title"></h1>
+            <div id="counter">
+                <div class="time-box"><span id="days">0</span>GÜN</div>
+                <div class="time-box"><span id="hours">0</span>SAAT</div>
+                <div class="time-box"><span id="minutes">0</span>DK.</div>
+                <div class="time-box"><span id="seconds">0</span>SN.</div>
+            </div>
+        </header>
+
+        <section id="alfabe">
+            <h2>A'dan Z'ye Benim için Sen</h2>
+            <div class="alphabet-grid">
+                <div class="letter-item"><b>Anlayışın</b>
+                    <p>En zor anlarımda, kendimi bile sevmediğim günlerde beni sessizce anlayıp kabul edişin...</p>
+                </div>
+                <div class="letter-item"><b>Bakışların</b>
+                    <p>Gözlerimin içine her bakışında, sanki tüm dünya sessizleşiyor ve sadece biz kalıyoruz.</p>
+                </div>
+                <div class="letter-item"><b>Cennetin</b>
+                    <p>Sesindeki huzur, kollarındaki güven... Benim bu dünyadaki tek cennetim senin yanın.</p>
+                </div>
+                <div class="letter-item"><b>Dürüstlüğün</b>
+                    <p>Kalbinin saflığı her sözüne yansıyor; sana olan güvenim, hayatımdaki en sağlam dayanağım.</p>
+                </div>
+                <div class="letter-item"><b>Ellerin</b>
+                    <p>Ellerimi tuttuğunda, ruhumun tüm eksik parçalarının birleştiğini hissediyorum.</p>
+                </div>
+                <div class="letter-item"><b>Farkın</b>
+                    <p>Herkes gibi olmayışın, kendine has zarif duruşun ve kimselere benzemeyen o özel ruhun.</p>
+                </div>
+                <div class="letter-item"><b>Gülüşün</b>
+                    <p>Bir gülümsemenle en karanlık günümü aydınlatabiliyorsun; sen benim şifa kaynağımsın.</p>
+                </div>
+                <div class="letter-item"><b>Her Şeyin...</b>
+                    <p>Sadece iyi yanlarınla değil; hatalarınla, uykulu halinle, her detayında seni eksiksiz seviyorum.
+                    </p>
+                </div>
+                <div class="letter-item"><b>İsmin</b>
+                    <p>Adın geçtiği an kalbimin atışının hızlanması, isminin dudaklarıma yakışan en güzel dua olması.
+                    </p>
+                </div>
+                <div class="letter-item"><b>Kokun</b>
+                    <p>Boynuna sokulduğumda aldığım o huzur veren koku; benim için dünyadaki en güzel parfüm.</p>
+                </div>
+                <div class="letter-item"><b>Lütfun</b>
+                    <p>Tanrı'nın bana sunduğu en büyük ödül, hayatımın en güzel mucizesi sensin.</p>
+                </div>
+                <div class="letter-item"><b>Merhametin</b>
+                    <p>Sadece bana değil, her canlıya karşı beslediğin o şefkatli, kocaman kalbin.</p>
+                </div>
+                <div class="letter-item"><b>Nefesin</b>
+                    <p>Yanımda uyurken duyduğum o düzenli nefes alışın, hayata şükretme sebebim.</p>
+                </div>
+                <div class="letter-item"><b>Omzun</b>
+                    <p>Dünyanın tüm yükünü bir kenara bırakıp başımı yaslayabildiğim tek güvenli liman.</p>
+                </div>
+                <div class="letter-item"><b>Özün</b>
+                    <p>Maskelerden uzak, sadece benim bildiğim o masum ve tertemiz ruhun.</p>
+                </div>
+                <div class="letter-item"><b>Parıltın</b>
+                    <p>Girdiğin her yeri ışığınla doldurman; ruhunun parıltısının yüzüne vuruşu.</p>
+                </div>
+                <div class="letter-item"><b>Ruhun</b>
+                    <p>Ruhumun diğer yarısı... Seninle konuşmadan bile anlaşabiliyor olmamızın eşsizliği.</p>
+                </div>
+                <div class="letter-item"><b>Sevgin, Saygın</b>
+                    <p>Beni sevme şeklin kadar, bana duyduğun o derin saygı bizi biz yapan en değerli şey.</p>
+                </div>
+                <div class="letter-item"><b>Tutkun</b>
+                    <p>Hayata ve bize olan o bitmek bilmeyen heyecanın, aşkımızı her gün taze tutuşun.</p>
+                </div>
+                <div class="letter-item"><b>Umudun</b>
+                    <p>Karanlığa düştüğümde elimden tutup beni aydınlığa çıkaracağın o sonsuz inancın.</p>
+                </div>
+                <div class="letter-item"><b>Varlığın</b>
+                    <p>Sadece nefes alman, bu dünyada bir yerlerde oluyor olman bile benim yaşama sebebim.</p>
+                </div>
+                <div class="letter-item"><b>Yol Arkadaşlığın</b>
+                    <p>Bu uzun ve bazen zorlu hayat yolunda, elimi hiç bırakmadan yanımda yürümen.</p>
+                </div>
+                <div class="letter-item"><b>Zarafetin</b>
+                    <p>Ruhundaki o asil duruş, her tavrındaki incelik... Sana her gün yeniden hayran oluyorum.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="kucuk-seyler">
+            <h2>Galerimizden Anılarımız</h2>
+            <div class="polaroid-grid">
+                <div class="polaroid"><img src="images/us/1.jpeg"><span>İlk fotoğrafımız...</span></div>
+                <div class="polaroid"><img src="images/us/10.jpeg"><span>En şık fotoğrafımız??</span></div>
+                <div class="polaroid"><img src="images/us/11.jpeg"><span>EN SEVDIĞIM FOTOĞRAFLARIMIZDAN</span></div>
+                <div class="polaroid"><img src="images/us/12.jpeg"><span>İlk ayna fotoğrafımız...</span></div>
+                <div class="polaroid"><img src="images/us/15.jpeg"><span>KAKTÜÜSSS</span></div>
+                <div class="polaroid"><img src="images/us/16.jpeg"><span>Bana bakışına hayranım sevgilim</span></div>
+            </div>
+        </section>
+
+        <section id="lezzetler">
+            <h2>Neler Yedik? 🍕</h2>
+            <p>"Sağlıklı ilişki kilo aldırır derler." ~G</p>
+            <p>
+                Seninle yemek yemeyi, farklı tatlar denemeyi öyle çok seviyorum ki sevgilim. <br>
+                Dünya üzerinde var olan yiyebileceğimiz her şeyi yiyelim istiyorum.<br>
+                Yeri geliyor beğenmiyoruz, yeri geliyor bayılıyoruz... <br>
+                Seninle yediğim her yemek benim için en iyisi sevgilim. <3 </p>
+                    <div class="food-grid">
+                        <div class="food-card">
+                            <img src="images/foods/1.jpeg" alt="Yemek">
+                            <div class="food-info">
+                                <h3>İlk Yemeğimiz ❤️</h3>
+                                <p>📍 Koza Kebap</p>
+                            </div>
+                        </div>
+
+                        <div class="food-card">
+                            <img src="images/foods/3.jpeg" alt="Yemek">
+                            <div class="food-info">
+                                <h3>Pilavcımız?</h3>
+                                <p>📍 Bi'Kova Pilav</p>
+                            </div>
+                        </div>
+
+                        <div class="food-card">
+                            <img src="images/foods/4.jpeg" alt="Yemek">
+                            <div class="food-info">
+                                <h3>Gayet güzeldi burası da ne dersin?</h3>
+                                <p>📍 Tombul Hamburger</p>
+                            </div>
+                        </div>
+
+                        <div class="food-card">
+                            <img src="images/foods/6.jpeg" alt="Yemek">
+                            <div class="food-info">
+                                <h3>UFFF ISKENDERRRR</h3>
+                                <p>📍 HD İskender</p>
+                            </div>
+                        </div>
+
+                        <div class="food-card">
+                            <img src="images/foods/7.jpeg" alt="Yemek">
+                            <div class="food-info">
+                                <h3>DAHA FAZLAA</h3>
+                                <p>📍 Baydöner</p>
+                            </div>
+                        </div>
+
+                        <div class="food-card">
+                            <img src="images/foods/8.jpeg" alt="Yemek">
+                            <div class="food-info">
+                                <h3>Yediğimiz tek çiğköfte</h3>
+                                <p>📍 Adıyamanlı Çiğköfteci</p>
+                            </div>
+                        </div>
+
+                        <div class="food-card">
+                            <img src="images/foods/9.jpeg" alt="Yemek">
+                            <div class="food-info">
+                                <h3>Biraz da sağlıksız beslenelimm</h3>
+                                <p>📍 Sbarro</p>
+                            </div>
+                        </div>
+
+                        <div class="food-card">
+                            <img src="images/foods/11.jpeg" alt="Yemek">
+                            <div class="food-info">
+                                <h3>Farklı lezzetler deniyoruzz</h3>
+                                <p>📍 Sokumcu</p>
+                            </div>
+                        </div>
+
+                        <div class="food-card">
+                            <img src="images/foods/12.jpeg" alt="Yemek">
+                            <div class="food-info">
+                                <h3>Seninle her yemek güzel sevgilim</h3>
+                                <p>📍 Cezve Kafe</p>
+                            </div>
+                        </div>
+
+                        <div class="food-card">
+                            <img src="images/foods/13.jpeg" alt="Yemek">
+                            <div class="food-info">
+                                <h3>En iyisi mi bilmem ama çook iyilerden</h3>
+                                <p>📍 Damak Tantuni</p>
+                            </div>
+                        </div>
+
+                        <div class="food-card">
+                            <img src="images/foods/14.jpeg" alt="Yemek">
+                            <div class="food-info">
+                                <h3>Unutamazsın sanırım o neydi öyle ya</h3>
+                                <p>📍 A101</p>
+                            </div>
+                        </div>
+
+                        <div class="food-card">
+                            <img src="images/foods/9.jpeg" alt="Yemek">
+                            <div class="food-info">
+                                <h3>En kötü içeceklerle en güzel günlerimizden...</h3>
+                                <p>📍 Macro Center</p>
+                            </div>
+                        </div>
+                    </div>
+        </section>
+
+        <section id="mektup-yagmuru">
+            <h2>Mektup Yağmuru</h2>
+            <p>Zarfların üzerine tıkla, senin için sakladığım minik notları bul...</p>
+            <div id="letter-rain-container"></div>
+        </section>
+
+        <section id="kumbaram">
+            <h2>Hayallerimiz / Hedeflerimiz</h2>
+            <div class="bucket-list">
+                <div class="bucket-item">Seneye Ankara'dayız!</div>
+                <div class="bucket-item">Sinemaya gideceğiizzz.</div>
+                <div class="bucket-item">Elbet bir gece kokoreç mi yesek deyip bozüyük atıp geleceğiz :D</div>
+                <div class="bucket-item">Seninle sarılıp saatlerce uyumak. (Düşünmesi bile heyecanlandırıyor)</div>
+                <div class="bucket-item">Sigarayı bırakmak.</div>
+                <div class="bucket-item">İki motor şehri turlamak.</div>
+                <div class="bucket-item">Güneşin doğuşunu ve batışını izlemek. (Benim güneşim her gün 8 civarı doğuyor.)
+                </div>
+                <div class="bucket-item">Issız bir yerde yıldızları izlemek.</div>
+                <div class="bucket-item">Tüm Türkiye'yi / kıtaları gezmek.</div>
+                <div class="bucket-item">Hep sevmek, hep sevilmek.</div>
+                <div class="bucket-item">Dünyadaki en yaşlı çift olmak.</div>
+            </div>
+        </section>
+
+        <section id="kazikazan">
+            <h2>Son Bir Sürpriz</h2>
+            <div class="scratch-container">
+                <div class="scratch-text">Seni her şeyden çok seviyorum sevgilim. İyi ki benimsin! ❤️</div>
+                <canvas id="scratch-canvas" width="300" height="150"></canvas>
+            </div>
+        </section>
+
+        <footer>
+            <p>17.01.2025 - Sonsuzluğa...</p>
+        </footer>
+    </div>
+
+    <script>
+        // Mektup Yağmuru Notları
+        const loveNotes = [
+            "Dünyanın en güzel gülen kadınısın. ~Y",
+            "Seninle geçen her dakika benim için çok kıymetli. ~Y",
+            "Ellerini hiç bırakmayacağım. ~Y",
+            "Varlığın hayatıma renk katıyor. ~Y",
+            "Sen benim bu hayattaki en güzel 'iyi ki'msin. ~Y",
+
+            "Gelecekteki tüm hayallerimin başrolünde sadece sen varsın. ~Y",
+            "Kalbinin saflığına her gün yeniden aşık oluyorum. ~Y",
+            "Seninle yaşlanmak, hayattaki asıl planım. ~Y",
+            "Ruhumun diğer yarısını sende buldum. ~Y",
+            "Seni çok seviyorum. ~Y",
+
+            "Dünyanın en güzel kadını... ~Y",
+            "Ellerin ellerime çok yakışıyor. ~Y",
+            "Gözlerinde huzuru buluyorum. ~Y",
+            "Birlikte ıslandığımız o yağmurlar, hayatımın en romantik anıydı. ~Y",
+            "Uykulu ses tonunu dünyadaki hiçbir müziğe değişmem. ~Y",
+
+            "Seninle içtiğim su bile dünyanın en lezzetli içeceği. ~Y",
+            "Her düştüğünde elini tutmak için tam burada olacağım. ~Y",
+            "Bizim hikayemiz daha yeni başlıyor sevgilim. ~Y",
+            "Sana olan sevgim her geçen gün daha da katlanıyor. ~Y",
+            "Dünya ne kadar gürültülü olursa olsun, senin yanın benim sessiz limanım. ~Y",
+
+            "En iyi arkadaşımsın. ~Y",
+            "BENIM MINIK BEBEĞIIMMM ~Y",
+            "Güzel kızım benim ~Y",
+            "Sen benim şarkılarımsın. ~Y",
+            "Biz biriz!"
+        ];
+
+        function checkPassword() {
+            if (document.getElementById('passwordInput').value === "1701") {
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('envelope-wrapper').style.display = 'flex';
+            } else { alert("Nasıl yani anlayamadım?! ~Y"); }
+        }
+
+        function openLetter() {
+            document.getElementById('main-envelope').classList.add('open');
+            setTimeout(() => {
+                document.getElementById('envelope-wrapper').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('envelope-wrapper').style.display = 'none';
+                    document.getElementById('main-content').style.display = 'block';
+                    document.getElementById('navbar').style.display = 'flex';
+                    document.getElementById('bg-music').play();
+                    startHearts();
+                    createLetterRain();
+                    typeWriter("Seni Her Şeyden Çok Seviyorum Sevgilim...", "typewriter-title");
+                    setInterval(updateCounter, 1000);
+                    initScratch();
+                }, 1000);
+            }, 1000);
+        }
+
+        // MEKTUP YAĞMURU
+        function createLetterRain() {
+            const container = document.getElementById('letter-rain-container');
+            setInterval(() => {
+                const letter = document.createElement('div');
+                letter.className = 'falling-letter';
+                letter.innerHTML = '✉️';
+                letter.style.left = Math.random() * 90 + '%';
+                letter.style.animationDuration = (Math.random() * 3 + 2.5) + 's';
+                letter.onclick = () => {
+                    alert("❤️ Not: " + loveNotes[Math.floor(Math.random() * loveNotes.length)]);
+                };
+                container.appendChild(letter);
+                setTimeout(() => letter.remove(), 5000);
+            }, 80);
+        }
+
+        // DAKTİLO EFEKTİ
+        function typeWriter(text, elementId) {
+            let i = 0; const elem = document.getElementById(elementId);
+            function type() { if (i < text.length) { elem.innerHTML += text.charAt(i); i++; setTimeout(type, 100); } }
+            type();
+        }
+
+        // KAZI KAZAN
+        function initScratch() {
+            const canvas = document.getElementById('scratch-canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#C0C0C0'; ctx.fillRect(0, 0, 300, 150);
+            ctx.fillStyle = '#666'; ctx.font = '18px Arial'; ctx.fillText('Mesajın Burada, Kazı!', 65, 85);
+            let drawing = false;
+            const scratch = (e) => {
+                if (!drawing) return;
+                const rect = canvas.getBoundingClientRect();
+                const x = (e.clientX || (e.touches ? e.touches[0].clientX : 0)) - rect.left;
+                const y = (e.clientY || (e.touches ? e.touches[0].clientY : 0)) - rect.top;
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.beginPath(); ctx.arc(x, y, 20, 0, Math.PI * 2); ctx.fill();
+            };
+            canvas.onmousedown = canvas.ontouchstart = () => drawing = true;
+            window.onmouseup = window.ontouchend = () => drawing = false;
+            canvas.onmousemove = canvas.ontouchmove = scratch;
+        }
+
+        // SAYAÇ VE KALPLER
+        function startHearts() {
+            setInterval(() => {
+                const h = document.createElement('div'); h.innerHTML = '❤'; h.className = 'heart-particle';
+                h.style.left = Math.random() * 100 + 'vw'; h.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                document.body.appendChild(h); setTimeout(() => h.remove(), 6000);
+            }, 400);
+        }
+
+        function updateCounter() {
+            const diff = new Date() - new Date("January 17, 2025 00:00:00");
+            document.getElementById("days").innerText = Math.floor(diff / 86400000);
+            document.getElementById("hours").innerText = Math.floor((diff % 86400000) / 3600000);
+            document.getElementById("minutes").innerText = Math.floor((diff % 3600000) / 60000);
+            document.getElementById("seconds").innerText = Math.floor((diff % 60000) / 1000);
+        }
+    </script>
+</body>
+
+</html>
